@@ -6,16 +6,24 @@ do
 	then
 		name=$(echo $file | cut -d "." -f 1)
 		extension=$(echo $file | cut -d "." -f 2)
-		echo $extension
-		if [ $extenstion == "sh" ] -o [ $extenstion == "exe" ]
+		if [ "./$name.$extension" == "$0" ] || [ $extension != "sh" ] && [ "$extension" != "exe" ]
 		then
-			echo $name $extension
+			continue
 		fi
-		#if [ $1 -eq 0 ]
-		#then
-		#	mv $name.sh $name.exe
-		#else
-		#	mv $name.exe $name.sh
-		#fi
+		if [ "$1" == "0" ]
+		then
+			mv $name.sh $name.exe
+			if [ $? -eq 0 ]
+			then
+				echo "Converted files from $name.sh to $name.exe"
+			fi
+		else
+			mv $name.exe $name.sh
+			if [ $? -eq 0 ]
+			then
+				echo "Converted files from $name.exe to $name.sh"
+			fi
+			
+		fi
 	fi
 done
