@@ -149,7 +149,7 @@ int main()
 	}
 
 	int semid;
-	if ((semid = semget(key, 3, IPC_CREAT | IPC_EXCL | 0666)) == -1)
+	if ((semid = semget(key, 3, IPC_CREAT | 0666)) == -1)
 	{
 		printf("Error: unable to create semaphore\n");
 		return 0;
