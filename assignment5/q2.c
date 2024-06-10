@@ -138,13 +138,13 @@ void child3(int semid)
 int main()
 {
 
-	const char *path = "/home/rdas6313/Documents/ju_shell/assignment5/tmp";
+	const char *path = "/Users/rajadas/Documents/ju_shell/assignment5/tmp";
 	int project_id = 10122002;
 
 	key_t key;
 	if ((key = ftok(path, project_id)) == -1)
 	{
-		printf("Error: unable to generate unique key\n");
+		printf("Error: unable to generate unique key. Create valid path and change project id.\n");
 		return 0;
 	}
 
