@@ -1,4 +1,4 @@
-//Question 3 of assignment 5 (Producer and consumer)
+// Question 3 of assignment 5 (Producer and consumer)
 
 #include <stdio.h>
 #include <unistd.h>
@@ -47,13 +47,14 @@ int signals(int semid, int index)
     return val;
 }
 
-int getSValue(int semid,int index){
-	int value = semctl(semid, index, GETVAL);
-	if (value == -1)
-	{
-		printf("Error: unable to get semaphore value\n");
-	}
-	return value;
+int getSValue(int semid, int index)
+{
+    int value = semctl(semid, index, GETVAL);
+    if (value == -1)
+    {
+        printf("Error: unable to get semaphore value\n");
+    }
+    return value;
 }
 
 void producer_process(int *shared, int semid)
@@ -67,57 +68,60 @@ void producer_process(int *shared, int semid)
     *rear = -1;
     while (1)
     {
-	if(!getSValue(semid,FREE_SEM)){
-		printf("Buffer Full! Can't produce\n");
-	}
+        getchar();
+        if (!getSValue(semid, FREE_SEM))
+        {
+            printf("Buffer Full! Can't produce\n");
+        }
         waits(semid, FREE_SEM);
         waits(semid, SHARED_SEM);
-	*rear = (*rear + 1) % MAX;
-	shared[*rear] = item++;
-        printf("Producing item %d at %d\n",shared[*rear],*rear);
+        *rear = (*rear + 1) % MAX;
+        shared[*rear] = item++;
+        printf("Producing item %d at %d\n", shared[*rear], *rear);
         signals(semid, SHARED_SEM);
         signals(semid, ITEM_SEM);
-	sleep(1);
     }
 }
 
 void consumer_process(int *shared, int semid)
-{   int *front = shared;
+{
+    int *front = shared;
     int *rear = (shared + 1);
     shared = (rear + 1);
     int semValue;
     int item = 0;
     *front = 0;
     while (1)
-    {	
-	if(!getSValue(semid,ITEM_SEM)){
-		printf("Empty Buffer! Can't consume\n");
-	}
+    {
+        if (!getSValue(semid, ITEM_SEM))
+        {
+            printf("Empty Buffer! Can't consume\n");
+        }
         waits(semid, ITEM_SEM);
         waits(semid, SHARED_SEM);
-	item = shared[(*front)];
-        printf("Consumig item %d at %d\n",item,*front);
-	*front = ((*front)+1)%MAX;
+        item = shared[(*front)];
+        printf("Consumig item %d at %d\n", item, *front);
+        *front = ((*front) + 1) % MAX;
         signals(semid, SHARED_SEM);
         signals(semid, FREE_SEM);
-        sleep(2);
+        sleep(1);
     }
 }
 
 int main()
 {
 
-    const char *path = "/home/user1/Downloads/ju_shell-main/assignment5/tmp";
+    const char *path = "/Users/rajadas/Documents/ju_shell/assignment5/tmp";
     int project_id = 1012231;
 
     key_t key;
     if ((key = ftok(path, project_id)) == -1)
     {
-        printf("Error: unable to generate unique key\n");
+        printf("Error: unable to generate unique key.Create new path and change project id.\n");
         return 0;
     }
-	
-    int size = sizeof(int)*12;
+
+    int size = sizeof(int) * 12;
     int shareid = shmget(key, size, IPC_CREAT | 0666);
     if (shareid < 0)
     {
@@ -126,7 +130,6 @@ int main()
     }
 
     int *shared = shmat(shareid, NULL, 0);
-    
 
     int semid;
     if ((semid = semget(key, 3, IPC_CREAT | 0666)) == -1)
