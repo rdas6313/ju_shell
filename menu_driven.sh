@@ -33,11 +33,15 @@ function is_valid_input(){
 function call_script(){
 	# arguemnt $1 -> selected assignment number
 	# argument $2 -> selected question number 
-	./a$1q$2.sh
+	#./a$1q$2.sh
+	cd "assignment$1"
+	chmod +x "a$2.sh"
+	"./a$2.sh"
+	cd ..
 
 }
 
-q_in_a=(5) #question in assignments
+q_in_a=(5 5 6) #question in assignments
 total_assignment=${#q_in_a[@]}
 
 should_run=1
